@@ -39,8 +39,11 @@ public class DateTimeHelperTest {
 
         assertEquals("00h 00m 00s", DateTimeHelper.getDeltaBetweenTimestamps(1000, 1000));
         assertEquals("00h 00m 00s", DateTimeHelper.getDeltaBetweenTimestamps(50000, 50000));
+        assertEquals("00h 00m 00s", DateTimeHelper.getDeltaBetweenTimestamps(50000, 50001));
+
 
         assertEquals("11h 01m 01s", DateTimeHelper.getDeltaBetweenTimestamps(1000 * 60 * 25, 1000 * 60 * 25 + 60 * 1000 * 60 * 11 + 60 * 1000 + 1000));
+
     }
 
     @Test
@@ -51,7 +54,9 @@ public class DateTimeHelperTest {
                 {123, -1000},
                 {-667, -1000},
                 {123, 0},
-                {12321321, 1231}
+                {12321321, 1231},
+                {0,-5},
+                {-154,0},
         };
         assertAll(
                 Arrays.stream(wrongData)
