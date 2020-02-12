@@ -97,6 +97,7 @@ public class NotificationOverlay extends CoreScreenLayer {
         if (isVisible()) {        // depends on the "visible" binding
             refresh();
         } else {
+            System.out.println("set to hide");
             hideImmediately();
         }
     }
@@ -104,6 +105,7 @@ public class NotificationOverlay extends CoreScreenLayer {
     private void refresh() {
         switch (state) {
             case VISIBLE:
+                //System.out.println("in refresh(), Current state VISIBLE, set time to 0");
                 time = 0;
                 break;
 
@@ -111,12 +113,14 @@ public class NotificationOverlay extends CoreScreenLayer {
                 break;
 
             case FADE_OUT:
+                //System.out.println("in refresh(), current state FADE_OUT, set time = time_fade - time, changed stated to Fade_IN");
                 state = State.FADE_IN;
                 time = TIME_FADE - time;
                 break;
 
             case HIDDEN:
                 time = 0;
+                //System.out.println("in refresh(), current state HIDDEN, set time to 0, change state to FADE_IN");
                 state = State.FADE_IN;
                 break;
         }
@@ -153,20 +157,25 @@ public class NotificationOverlay extends CoreScreenLayer {
         super.update(delta);
 
         time += delta;
+        //System.out.println("Time increased by " + delta);
 
         switch (state) {
             case FADE_IN:
                 if (time > TIME_FADE) {
+                    //System.out.println("Set to visible, time = " + time);
                     time = 0;
                     state = State.VISIBLE;
                 }
+                //else System.out.println("Nothing changed, Time = " + time);
                 break;
 
             case FADE_OUT:
                 if (time > TIME_FADE) {
+                    //System.out.println("Set to hidden, time = " + time);
                     time = 0;
                     state = State.HIDDEN;
                 }
+                //else System.out.println("Nothing changed, time = " + time);
                 break;
 
             case HIDDEN:
@@ -175,12 +184,13 @@ public class NotificationOverlay extends CoreScreenLayer {
             case VISIBLE:
                 int textLen = message.getText().length();
                 float maxTime = TIME_VISIBLE_BASE + textLen * TIME_VISIBLE_PER_CHAR;
-
                 // longer text messages are shown for longer periods of time
                 if (time > maxTime) {
+                    //System.out.println("Set to fade out, time = " + time);
                     time = 0;
                     state = State.FADE_OUT;
                 }
+                //else System.out.println("Nothing changed, time = " + time);
                 break;
         }
     }
@@ -200,4 +210,23 @@ public class NotificationOverlay extends CoreScreenLayer {
         return false;
     }
 
+    /**
+     * getters and setters for testing purposes
+     * @return
+     */
+    public String getStateValue(){
+        return state.toString();
+    }
+
+    public float getTime(){
+        return time;
+    }
+
+    public UILabel getMessage() {
+        return message;
+    }
+
+    public void setState(String state){
+        this.state = Enum.valueOf(State.class, state);
+    }
 }
