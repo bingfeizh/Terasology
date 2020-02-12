@@ -8,24 +8,28 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.runner.RunWith;
+import org.mockito.internal.util.reflection.FieldSetter;
 import org.terasology.TerasologyTestingEnvironment;
 
 import org.mockito.*;
+//import org.powermock.modules.junit4.*;
+
+
+
+import org.terasology.rendering.nui.UIWidget;
 import org.terasology.rendering.nui.widgets.UILabel;
 
 
-import java.util.Iterator;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 /**
  * All test cases are executed in order to make the state machine simulating process cleaner.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class NotificationOverlayTest extends TerasologyTestingEnvironment{
+//@RunWith(PowerMockRunner.class)
+public class NotificationOverlayTest extends TerasologyTestingEnvironment {
 
     private enum State {
         FADE_IN,
@@ -33,11 +37,6 @@ public class NotificationOverlayTest extends TerasologyTestingEnvironment{
         FADE_OUT,
         HIDDEN
     }
-
-    @Mock
-    private UILabel mockedLabel;
-
-    //NotificationOverlay overlay;
 
     // Notification depends on abstract class AbstractWidget, while its method setVisible invokes the super method.
     // Thus we mock everything in the super method call.
@@ -49,6 +48,7 @@ public class NotificationOverlayTest extends TerasologyTestingEnvironment{
         //overlay.initialise();
 
         spy = new NotificationOverlay();
+
     }
     /**
      * On setVisible(true), refresh() should be called and the state should transit to FADE_IN if it was previously HIDDEN
@@ -69,9 +69,15 @@ public class NotificationOverlayTest extends TerasologyTestingEnvironment{
      */
     @Test
     @Order(2)
-    public void whatEverToFadeIn(){
+    public void whatEverToHIDDEN(){
         spy.setVisible(false);
         // we compare state strings directly.
+        assertEquals(spy.getStateValue(), State.HIDDEN.toString());
+        spy.setState("VISIBLE");
+        spy.setVisible(false);
+        assertEquals(spy.getStateValue(), State.HIDDEN.toString());
+        spy.setState(("FADE_OUT"));
+        spy.setVisible(false);
         assertEquals(spy.getStateValue(), State.HIDDEN.toString());
     }
 
@@ -95,16 +101,26 @@ public class NotificationOverlayTest extends TerasologyTestingEnvironment{
     }
 
     /**
-//     * VISIBLE should go to FADE_IN when time+delta > maxTime on update(delta) call. No change otherwise.
-//     * maxTime is set to be TIME_VISIBLE_BASE + textLen * TIME_VISIBLE_PER_CHAR;
-//     * Since textLen is impossible to be got, maxTime should be equal to only TIME_VISIBLE_BASE, which is 5.
-//     * Note that time is set to 0 on any state changes.
-//     *
-//     */
+     * VISIBLE should go to FADE_IN when time+delta > maxTime on update(delta) call. No change otherwise.
+     * maxTime is set to be TIME_VISIBLE_BASE + textLen * TIME_VISIBLE_PER_CHAR;
+     * Since textLen is impossible to be got, maxTime should be equal to only TIME_VISIBLE_BASE, which is 5.
+     * Note that time is set to 0 on any state changes.
+     *
+     */
 //    @Test
 //    @Order(4)
 //    public void visibleNoChangeAndToFadeOut(){
+//
+//        try{
+//            FieldSetter.setField(spy, spy.getClass().getDeclaredField("message"), Mockito.mock(UILabel.class));
+//        }catch(NoSuchFieldException e){
+//            System.out.println(e);
+//        }
 //        spy.setVisible(true);
+//        spy.setState("VISIBLE");
+//        spy.setVisible(false);
+//        assertEquals(spy.getStateValue(), State.HIDDEN.toString());     //should go back to hidden directly
+//        spy.setState("VISIBLE");
 //        spy.update(1);
 //        assertEquals(spy.getStateValue(), State.VISIBLE.toString());
 //        spy.update(10);

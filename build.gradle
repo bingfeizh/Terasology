@@ -32,6 +32,8 @@ buildscript {
         // Needed for caching reflected data during builds
         classpath 'org.reflections:reflections:0.9.10'
         classpath 'dom4j:dom4j:1.6.1'
+
+
     }
 }
 
@@ -58,7 +60,8 @@ repositories {
 
     // MovingBlocks Artifactory instance for libs not readily available elsewhere plus our own libs
     maven {
-        url "http://artifactory.terasology.org/artifactory/virtual-repo-live"
+        url "http://artifactory.terasology.org/artifactory/virtual-repo-live";
+
     }
 }
 
@@ -81,6 +84,10 @@ dependencies {
 
     // Natives for JNLua (Kallisti, KComputers)
     natives group: 'org.terasology.jnlua', name: 'jnlua_natives', version: '0.1.0-SNAPSHOT', ext: 'zip'
+
+    implementation 'org.powermock:powermock-reflect:2.0.5'
+
+    testCompile group: 'org.powermock', name: 'powermock-module-junit4', version: '1.6.5'
 }
 
 task extractWindowsNatives(type:Copy) {
